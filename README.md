@@ -11,7 +11,7 @@ https://raw.githubusercontent.com/stakater/Reloader/master/deployments/kubernete
 ```
 如果无法拉取,可以去我github上拉取相关配置文件[Github](https://github.com/evenno/Reloader)
 
-首先创建我们要用到的配置对象Configmap(nginx.conf)：
+首先创建我们要用到的配置对象Configmap(domain_name.conf)：
 
 kubectl create configmap nginx-conf --from-file=configmap/conf/
 
