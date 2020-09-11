@@ -1,14 +1,31 @@
-# Reloader
-这个项目叫做 Reloader，它可以监控 Configmap/Secret 的变化，根据 Annotation 选择 Deployment，对相关 Deployment 进行滚动更新。
+title: 根据 Configmap Secret 变化更新 Deployment
+author: Even Chan
+tags:
+  - 部署
+toc: true
+categories:
+  - kubernetes
+date: 2020-09-11 10:39:00
+---
+
+这个项目叫做 [Reloader](https://github.com/stakater/Reloader)，它可以监控 Configmap/Secret 的变化，根据 Annotation 选择 Deployment，对相关 Deployment 进行滚动更新。
+
+## 部署
+
 
 简单工具的安装还是很简单的：
 
+```
 kubectl apply -f \
 https://raw.githubusercontent.com/stakater/Reloader/master/deployments/kubernetes/reloader.yaml
-首先创建我们要用到的配置对象，其中包含了一个 Secret 和一个 Configmap：
+```
+如果无法拉取,可以去我github上拉取相关配置文件[Github](https://github.com/evenno/Reloader)
+
+首先创建我们要用到的配置对象Configmap(nginx.conf)：
 
 kubectl create configmap nginx-conf --from-file=configmap/conf/
 
+```yaml
 server {
    listen       8082;         ##端口为8082
    server_name  _;
@@ -17,10 +34,11 @@ server {
    location / {
    }
 }
-
+```
 
 接下来部署一个Nginx，来验证 Reloader 的功能：
 
+```yaml
 apiVersion: apps/v1
 kind: Deployment
 metadata:
@@ -52,20 +70,26 @@ spec:
         - name: nginx-cm
           configMap:
             name: nginx-conf
+```
 
 这里的 Annotation 表示自动监控相关对象。
 
-接下来随意改动一下 Configmap 或者 Secret 的值，就会看到 Pod 重建了。
+接下来随意改动一下 Configmap 的值，就会看到 Pod 重建了。
 
 自动变更有时也需要手工指定的辅助的，例如服务依赖的情况，可以依赖上游服务的 Configmap 变更进行重启；或者是对某些可以自动处理的配置文件进行忽略处理，都可以使用如下两个注解：
 
-secret.reloader.stakater.com/reload: "secret1,secret2"
-configmap.reloader.stakater.com/reload: "configmap1, configmap2"
-补充
+- `secret.reloader.stakater.com/reload: "secret1,secret2"`
+- `configmap.reloader.stakater.com/reload: "configmap1, configmap2"`
+
+&nbsp;
+## 补充
+
 Reloader 的命令行还有两个参数：
 
---namespaces-to-ignore：忽略部分命名空间的监听
---resources-to-ignore：忽略部分对象的变更
+- `--namespaces-to-ignore`：忽略部分命名空间的监听
+- `--resources-to-ignore`：忽略部分对象的变更
 
-相关链接
-https://github.com/stakater/Reloader
+&nbsp;
+## 相关链接
+- `https://github.com/evenno/Reloader`
+- `https://github.com/stakater/Reloader`
