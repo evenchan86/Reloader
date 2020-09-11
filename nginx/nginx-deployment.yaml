@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-pod
+  annotations:
+    reloader.stakater.com/auto: "true"
+spec:
+  selector:
+    matchLabels:
+      app: nginx-pod
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: nginx-pod
+    spec:
+      containers:
+        - name: nginx
+          image: nginx:1.9
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 80
+              name: port
+              protocol: TCP
+          volumeMounts:
+            - name: nginx-cm
+              mountPath: "/etc/nginx/conf.d"
+      volumes:
+        - name: nginx-cm
+          configMap:
+            name: nginx-conf
