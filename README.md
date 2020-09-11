@@ -1,13 +1,3 @@
-title: 根据 Configmap Secret 变化更新 Deployment
-author: Even Chan
-tags:
-  - 部署
-toc: true
-categories:
-  - kubernetes
-date: 2020-09-11 10:39:00
----
-
 这个项目叫做 [Reloader](https://github.com/stakater/Reloader)，它可以监控 Configmap/Secret 的变化，根据 Annotation 选择 Deployment，对相关 Deployment 进行滚动更新。
 
 ## 部署
